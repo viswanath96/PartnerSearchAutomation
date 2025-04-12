@@ -312,7 +312,8 @@ def Get_the_count_of_the_total_online(driver,By,time,sleepTime,number):
         except Exception as e:
             # Catch all exception types and do nothing
             print(f"An exception occurred: {e}. Skipping click.")
-    handle_json_write(data,"data.json")
+    serialized_schedule_list = [schedule.to_dict() for schedule in data]
+    handle_json_write(serialized_schedule_list,"data.json")
     click_next_and_remind_and_sendreminder(driver,By,time,sleepTime,number)
 
 
@@ -326,7 +327,7 @@ print("Data written to file!")
 def handle_json_write(json_data, file_name="data.json"):
     # Writing JSON data to the file
     with open(file_name, "w") as file:
-        json.dump(json_data.to_dict(), file, indent=4)
+        json.dump(json_data, file, indent=4)
     print(f"JSON data has been written to {file_name}.")
     
     
