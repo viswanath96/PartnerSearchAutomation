@@ -76,6 +76,8 @@ elif number == "3":
     remove_inactive_profiles(driver,By,time,sleepTime,number)
 elif number == "4":
     remove_inactive_profiles_using_xpath(driver,By,time,sleepTime,number)
+elif number == "5":
+    Get_the_count_of_the_total_online(driver,By,time,sleepTime,number)
 else:
     print("Option invalid. Please re-run.")
 
