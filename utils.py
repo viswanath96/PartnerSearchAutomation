@@ -95,6 +95,8 @@ def click_next_and_remind_and_sendreminder(driver,By,time,sleepTime,number):
         remove_inactive_profiles(driver,By,time,sleepTime,number)
     elif number == "4":
         remove_inactive_profiles_using_xpath(driver,By,time,sleepTime,number)
+    elif number == "5":
+        Get_the_count_of_the_total_online(driver,By,time,sleepTime,number)
 
 #Send message instead of a reminder
 def send_message_to_profiles(driver,By,time,sleepTime,number):
