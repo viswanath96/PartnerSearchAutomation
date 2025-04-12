@@ -6,9 +6,12 @@ class Schedule:
         self.date = date
         self.occurance = occurance
 
-    def display(self):
+    def to_dict(self):
         return {
             "day": self.day,
             "date": self.date,
-            "occurance": self.occurance
+            "count": self.count
         }
+
+    def display(self):
+        return self.to_dict()
