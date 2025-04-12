@@ -254,7 +254,7 @@ def Get_the_count_of_the_total_online(driver,By,time,sleepTime,number):
             if dropdown_button:
                 chat_now_button_xpath = './/*[@title="Chat Now"]'
                 status_text_element = profile.find_element(By.XPATH, chat_now_button_xpath)
-                if status_text_element.text == "Online 2w ago" or status_text_element.text == "Online 1w ago":
+                if status_text_element.text == "Online now":
                     print(status_text_element.text)
                     time.sleep(sleepTime)
                     dropdown_button.click()
