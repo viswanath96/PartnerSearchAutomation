@@ -280,18 +280,24 @@ def Get_the_count_of_the_total_online(driver,By,time,sleepTime,number):
                     # Specify the time key to check
                     date_key = now.strftime("%m-%d-%Y")
                     time_key = now.strftime("%H")
-                    today = data[date_key] 
-                    if today:
-                        counts = today.count
-                        for count in counts:
-                            if count["hour"] == time_key:
-                                count[count] +=1
+                    found_date = False
+                    for datum in data:
+                        if datum["date"] == date_key:
+                            today = datum
+                            occurances = today.occurance
+                            found_date = True
+                            found_hour = False
+                            for occurance in occurances:
+                                if occurance["hour"] == time_key:
+                                    occurance["count"] +=1
+                                    found_hour = True
+                                    break
+                            if not found_hour:
+                                occurances.append({"hour":now.strftime("%H"), "count":1})
                                 break
-                            else:
-                                counts.append({"hour":now.strftime("%H"), "count":1})
-                                break
-                    else:
-                        new_schedule = Schedule(day=now.strftime("%A"),date=now.strftime("%m-%d-%Y"),count=[{"hour": now.strftime("%H"), "count": 1}])
+                            break
+                    if not found_date:
+                        new_schedule = Schedule(day=now.strftime("%A"),date=now.strftime("%m-%d-%Y"),occurance=[{"hour": now.strftime("%H"), "count": 1}])
                         data.append(new_schedule)
 
                     time.sleep(sleepTime)
