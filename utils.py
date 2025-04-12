@@ -3,11 +3,13 @@ import json
 # utils.py
 
 # Data to be written
-data = {
-    "day": "Tuesday",
+data = [
+    {"day": "Tuesday",
     "date": "4/1/2025",
     "count": [{"12:00":"0"}]
-}
+    }
+    ]
+
 
 #Click link with text and sleep timer
 def click_link_with_text(driver,By,link_text,time,sleepTime):
@@ -248,7 +250,8 @@ def Get_the_count_of_the_total_online(driver,By,time,sleepTime,number):
     profile_container_xpath = '//*[@id="root"]/div/div/div/div[2]/div[1]/div/div/div[2]/div[2]/div[2]/div/div[1]'
     container_div = driver.find_element(By.XPATH, profile_container_xpath)
     profile_divs = container_div.find_elements(By.XPATH, './div')
-
+    data = handle_json_read("data.json")
+    print(data)
     # # Iterate through the list of links and click each one
     # for profile in profile_divs:
     #     # Scroll the element to the middle of the screen using JavaScript
