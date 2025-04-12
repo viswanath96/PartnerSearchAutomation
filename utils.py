@@ -249,36 +249,36 @@ def Get_the_count_of_the_total_online(driver,By,time,sleepTime,number):
     container_div = driver.find_element(By.XPATH, profile_container_xpath)
     profile_divs = container_div.find_elements(By.XPATH, './div')
 
-    # Iterate through the list of links and click each one
-    for profile in profile_divs:
-        # Scroll the element to the middle of the screen using JavaScript
-        driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", profile)
-        time.sleep(sleepTime)
+    # # Iterate through the list of links and click each one
+    # for profile in profile_divs:
+    #     # Scroll the element to the middle of the screen using JavaScript
+    #     driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", profile)
+    #     time.sleep(sleepTime)
         
-        try:
-            dropdown_button_xpath = './/*[@data-test-selector="listDropdown"]'
-            dropdown_button = profile.find_element(By.XPATH, dropdown_button_xpath)
+    #     try:
+    #         dropdown_button_xpath = './/*[@data-test-selector="listDropdown"]'
+    #         dropdown_button = profile.find_element(By.XPATH, dropdown_button_xpath)
 
-            if dropdown_button:
-                chat_now_button_xpath = './/*[@title="Chat Now"]'
-                status_text_element = profile.find_element(By.XPATH, chat_now_button_xpath)
-                if status_text_element.text == "Online now":
-                    print(status_text_element.text)
-                    time.sleep(sleepTime)
-                    dropdown_button.click()
-                    cancel_button_xpath = './/*[@data-test-selector="cancelInvitationInboxPage"]'
-                    cancel_button = profile.find_element(By.XPATH, cancel_button_xpath)
-                    cancel_button.click()
-                    time.sleep(sleepTime)
-                else:
-                    print(f"Profile {status_text_element.text}")
-            else:
-                print("Profile deactivated")
-        except Exception as e:
-            # Catch all exception types and do nothing
-            print(f"An exception occurred: {e}. Skipping click.")
+    #         if dropdown_button:
+    #             chat_now_button_xpath = './/*[@title="Chat Now"]'
+    #             status_text_element = profile.find_element(By.XPATH, chat_now_button_xpath)
+    #             if status_text_element.text == "Online now":
+    #                 print(status_text_element.text)
+    #                 time.sleep(sleepTime)
+    #                 dropdown_button.click()
+    #                 cancel_button_xpath = './/*[@data-test-selector="cancelInvitationInboxPage"]'
+    #                 cancel_button = profile.find_element(By.XPATH, cancel_button_xpath)
+    #                 cancel_button.click()
+    #                 time.sleep(sleepTime)
+    #             else:
+    #                 print(f"Profile {status_text_element.text}")
+    #         else:
+    #             print("Profile deactivated")
+    #     except Exception as e:
+    #         # Catch all exception types and do nothing
+    #         print(f"An exception occurred: {e}. Skipping click.")
 
-    click_next_and_remind_and_sendreminder(driver,By,time,sleepTime,number)
+    # click_next_and_remind_and_sendreminder(driver,By,time,sleepTime,number)
 
 
 # Writing to a JSON file
