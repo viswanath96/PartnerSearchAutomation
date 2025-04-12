@@ -6,11 +6,16 @@ from Schedule import Schedule
 
 # Data to be written
 data = [
-    {"day": "Tuesday",
-    "date": "4/1/2025",
-    "count": [{"12:00":"0"}]
+    {
+        "day": "Tuesday",
+        "date": "4/1/2025",
+        "occurance": [{
+            "hour":"12:00",
+            "count":"1"
+    }]
     }
-    ]
+]
+
 
 
 #Click link with text and sleep timer
@@ -321,7 +326,7 @@ print("Data written to file!")
 def handle_json_write(json_data, file_name="data.json"):
     # Writing JSON data to the file
     with open(file_name, "w") as file:
-        json.dump(json_data, file, indent=4)
+        json.dump(json_data.to_dict(), file, indent=4)
     print(f"JSON data has been written to {file_name}.")
     
     
