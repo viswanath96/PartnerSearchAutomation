@@ -1,9 +1,8 @@
 from datetime import datetime
 import inspect
 import json
+from Schedule import Schedule
 # utils.py
-
-import Schedule
 
 # Data to be written
 data = [
