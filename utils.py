@@ -1,5 +1,13 @@
 import inspect
+import json
 # utils.py
+
+# Data to be written
+data = {
+    "day": "Tuesday",
+    "date": "4/1/2025",
+    "count": [{"12:00":"0"}]
+}
 
 #Click link with text and sleep timer
 def click_link_with_text(driver,By,link_text,time,sleepTime):
@@ -271,3 +279,25 @@ def Get_the_count_of_the_total_online(driver,By,time,sleepTime,number):
             print(f"An exception occurred: {e}. Skipping click.")
 
     click_next_and_remind_and_sendreminder(driver,By,time,sleepTime,number)
+
+
+# Writing to a JSON file
+with open("data.json", "w") as file:
+    json.dump(data, file, indent=4)  # `indent` adds pretty formatting
+print("Data written to file!")
+
+
+
+def handle_json_write(json_data, file_name="data.json"):
+    # Writing JSON data to the file
+    with open(file_name, "w") as file:
+        json.dump(json_data, file, indent=4)
+    print(f"JSON data has been written to {file_name}.")
+    
+    
+def handle_json_read(file_name="data.json"):
+    # Reading JSON data back from the file
+    with open(file_name, "r") as file:
+        read_data = json.load(file)
+    print("JSON data has been read back from the file.")
+    return read_data
