@@ -10,7 +10,7 @@ class Schedule:
         return {
             "day": self.day,
             "date": self.date,
-            "count": self.count
+            "occurance": self.occurance
         }
 
     def display(self):
