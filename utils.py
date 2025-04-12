@@ -6,14 +6,7 @@ from Schedule import Schedule
 
 # Data to be written
 data = [
-    {
-        "day": "Tuesday",
-        "date": "4/1/2025",
-        "occurance": [{
-            "hour":"12:00",
-            "count":"1"
-    }]
-    }
+   
 ]
 
 
@@ -288,7 +281,7 @@ def Get_the_count_of_the_total_online(driver,By,time,sleepTime,number):
                     for datum in data:
                         if datum["date"] == date_key:
                             today = datum
-                            occurances = today.occurance
+                            occurances = today["occurance"]
                             found_date = True
                             found_hour = False
                             for occurance in occurances:
@@ -302,7 +295,7 @@ def Get_the_count_of_the_total_online(driver,By,time,sleepTime,number):
                             break
                     if not found_date:
                         new_schedule = Schedule(day=now.strftime("%A"),date=now.strftime("%m-%d-%Y"),occurance=[{"hour": now.strftime("%H"), "count": 1}])
-                        data.append(new_schedule)
+                        data.append(new_schedule.to_dict())
 
                     time.sleep(sleepTime)
                 else:
@@ -312,8 +305,7 @@ def Get_the_count_of_the_total_online(driver,By,time,sleepTime,number):
         except Exception as e:
             # Catch all exception types and do nothing
             print(f"An exception occurred: {e}. Skipping click.")
-    serialized_schedule_list = [schedule.to_dict() for schedule in data]
-    handle_json_write(serialized_schedule_list,"data.json")
+    handle_json_write(data,"data.json")
     click_next_and_remind_and_sendreminder(driver,By,time,sleepTime,number)
 
 
