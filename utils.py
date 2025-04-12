@@ -4,12 +4,6 @@ import json
 from Schedule import Schedule
 # utils.py
 
-# Data to be written
-data = [
-   
-]
-
-
 
 #Click link with text and sleep timer
 def click_link_with_text(driver,By,link_text,time,sleepTime):
@@ -126,6 +120,10 @@ def send_message_to_profiles(driver,By,time,sleepTime,number):
 
             # Switch to the new tab
             driver.switch_to.window(driver.window_handles[1])
+            
+            online_now_text = driver.find_elements(By.XPATH, '//*[@id="root"]/div/div/div/div[2]/div[1]/div/div/div[3]/div[2]/div[2]/div[1]/div/div/div[2]/div/span')[0]
+            if online_now_text.text != "Online now":
+                continue
 
             # Find links with the specific text "Button Text"
             write_message_button = driver.find_elements(By.XPATH, '//button[text()="Write Message"]')[0]
@@ -307,13 +305,6 @@ def Get_the_count_of_the_total_online(driver,By,time,sleepTime,number):
             print(f"An exception occurred: {e}. Skipping click.")
     handle_json_write(data,"data.json")
     click_next_and_remind_and_sendreminder(driver,By,time,sleepTime,number)
-
-
-# Writing to a JSON file
-with open("data.json", "w") as file:
-    json.dump(data, file, indent=4)  # `indent` adds pretty formatting
-print("Data written to file!")
-
 
 
 def handle_json_write(json_data, file_name="data.json"):
