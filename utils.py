@@ -1,6 +1,9 @@
+from datetime import datetime
 import inspect
 import json
 # utils.py
+
+import Schedule
 
 # Data to be written
 data = [
@@ -267,11 +270,30 @@ def Get_the_count_of_the_total_online(driver,By,time,sleepTime,number):
                 status_text_element = profile.find_element(By.XPATH, chat_now_button_xpath)
                 if status_text_element.text == "Online now":
                     print(status_text_element.text)
-                    time.sleep(sleepTime)
-                    dropdown_button.click()
-                    cancel_button_xpath = './/*[@data-test-selector="cancelInvitationInboxPage"]'
-                    cancel_button = profile.find_element(By.XPATH, cancel_button_xpath)
-                    cancel_button.click()
+                    # Get the current date and time
+                    now = datetime.now()
+                    # Display the results
+                    print(f"Current Hour (24): {now.strftime("%H")}") # 24-hour format
+                    print(f"Current Day: {now.strftime("%A")}") # Full day name
+                    print(f"Current Date (MM-DD-YYYY): {now.strftime("%m-%d-%Y")}") # Month-Day-Year format
+                    # Query and update
+                    # Specify the time key to check
+                    date_key = now.strftime("%m-%d-%Y")
+                    time_key = now.strftime("%H")
+                    today = data[date_key] 
+                    if today:
+                        counts = today.count
+                        for count in counts:
+                            if count["hour"] == time_key:
+                                count[count] +=1
+                                break
+                            else:
+                                counts.append({"hour":now.strftime("%H"), "count":1})
+                                break
+                    else:
+                        new_schedule = Schedule(day=now.strftime("%A"),date=now.strftime("%m-%d-%Y"),count=[{"hour": now.strftime("%H"), "count": 1}])
+                        data.append(new_schedule)
+
                     time.sleep(sleepTime)
                 else:
                     print(f"Profile {status_text_element.text}")
@@ -304,3 +326,4 @@ def handle_json_read(file_name="data.json"):
         read_data = json.load(file)
     print("JSON data has been read back from the file.")
     return read_data
+
