@@ -17,6 +17,7 @@ print(f"1.Send reminders.")
 print(f"2.Send custom message from the file.")
 print(f"3.Remove Inactive Profiles.")
 print(f"4.Remove Inactive Profiles by xpath.")
+print(f"5.Get the count of the total online.")
 
 number = input("What's your choice?")
 
