@@ -307,7 +307,7 @@ def Get_the_count_of_the_total_online(driver,By,time,sleepTime,number):
         except Exception as e:
             # Catch all exception types and do nothing
             print(f"An exception occurred: {e}. Skipping click.")
-
+    handle_json_write(data,"data.json")
     click_next_and_remind_and_sendreminder(driver,By,time,sleepTime,number)
 
 
