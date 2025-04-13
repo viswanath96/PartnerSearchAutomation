@@ -1,323 +1,247 @@
 from datetime import datetime
 import inspect
 import json
+from abc import ABC, abstractmethod
+from typing import Optional
 from Schedule import Schedule
-# utils.py
+from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException
 
+# Base class for profile actions
+class ProfileAction(ABC):
+    """Base class for profile actions that process pages of profiles.
+    
+    This class implements the template method pattern where subclasses must
+    implement process_page() to define how individual pages are processed.
+    """
+    def __init__(self, driver, By, time, sleepTime):
+        self.driver = driver
+        self.By = By
+        self.time = time
+        self.sleepTime = sleepTime
 
-#Click link with text and sleep timer
-def click_link_with_text(driver,By,link_text,time,sleepTime):
-    # Find and click the link with the exact text "Specific Link Text"
-    link_element = driver.find_element(By.LINK_TEXT, link_text)
-    link_element.click()
-    time.sleep(sleepTime)
+    @abstractmethod
+    def process_page(self) -> None:
+        """Process the current page of profiles.
+        
+        This method must be implemented by subclasses to define how to
+        process profiles on the current page.
+        
+        Raises:
+            NotImplementedError: If the subclass doesn't implement this method
+        """
+        raise NotImplementedError("Subclasses must implement process_page")
 
-#Click link with text and sleep timer
-def click_button_with_id(driver,By,button_id,time,sleepTime):
-    # Locate and click the login button
-    login_button = driver.find_element(By.ID, button_id)
-    login_button.click()
-    time.sleep(sleepTime)
+    def has_next_page(self) -> bool:
+        try:
+            next_button = self.driver.find_elements(self.By.XPATH, '//button[contains(text(), "Next")]')
+            return len(next_button) > 0 and next_button[0].is_enabled()
+        except (NoSuchElementException, StaleElementReferenceException):
+            return False
 
+    def click_next_page(self) -> bool:
+        try:
+            next_button = self.driver.find_elements(self.By.XPATH, '//button[contains(text(), "Next")]')[0]
+            self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", next_button)
+            next_button.click()
+            self.time.sleep(self.sleepTime)
+            return True
+        except Exception as e:
+            print(f"Failed to navigate to next page: {e}")
+            return False
 
-#Click the Remind and Send Reminder button
-def click_remind_and_sendreminder(driver,By,time,sleepTime):
-    # Find all buttons with the specific text "Button Text"
-    buttons = driver.find_elements(By.XPATH, '//button[text()="Remind"]')
+    def process_all_pages(self) -> None:
+        page_number = 1
+        while True:
+            print(f"Processing page {page_number}")
+            self.process_page()
+            
+            if not self.has_next_page():
+                print("Reached last page")
+                break
+                
+            if not self.click_next_page():
+                print("Failed to navigate to next page")
+                break
+                
+            page_number += 1
 
-    # Iterate through the list of buttons and click each one
-    for button in buttons:
-        # Scroll the element to the middle of the screen using JavaScript
-        driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", button)
-        if button.is_enabled():
-            # Button is enabled, click it
-            button.click()
-            time.sleep(sleepTime)
-            # Find buttons with the specific text "Button Text"
-            reminder_button = driver.find_elements(By.XPATH, '//button[text()="Send Reminder"]')
-            # Check if any buttons with the specific text exist        
-            reminder_button[0].click()
-            time.sleep(sleepTime)
-        time.sleep(sleepTime)
+class ReminderAction(ProfileAction):
+    def process_page(self) -> None:
+        buttons = self.driver.find_elements(self.By.XPATH, '//button[text()="Remind"]')
+        
+        for button in buttons:
+            try:
+                self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", button)
+                button.click()
+                self.time.sleep(self.sleepTime)
+                
+                reminder_button = self.driver.find_elements(self.By.XPATH, '//button[text()="Send Reminder"]')[0]
+                reminder_button.click()
+                self.time.sleep(self.sleepTime)
+            except Exception as e:
+                print(f"Failed to process reminder: {e}")
 
-#Read the message from the file and return the text
-def message_from_file(file_path):
+class MessageAction(ProfileAction):
+    def __init__(self, driver, By, time, sleepTime, message: str):
+        super().__init__(driver, By, time, sleepTime)
+        self.message = message
+
+    def process_page(self) -> None:
+        links = self.driver.find_elements(self.By.XPATH, '//a[text()="Read More"]')
+        
+        for link in links:
+            try:
+                self.process_single_profile(link)
+            except Exception as e:
+                print(f"Failed to process profile: {e}")
+                self.cleanup_tabs()
+
+    def process_single_profile(self, link) -> None:
+        self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", link)
+        link.click()
+        self.time.sleep(self.sleepTime)
+        
+        # Switch to new tab
+        self.driver.switch_to.window(self.driver.window_handles[1])
+        
+        if not self.is_profile_online():
+            self.cleanup_tabs()
+            return
+            
+        self.send_message()
+        self.cleanup_tabs()
+
+    def is_profile_online(self) -> bool:
+        online_text = self.driver.find_elements(
+            self.By.XPATH, 
+            '//*[@id="root"]/div/div/div/div[2]/div[1]/div/div/div[3]/div[2]/div[2]/div[1]/div/div/div[2]/div/span'
+        )[0]
+        return online_text.text == "Online now"
+
+    def send_message(self) -> None:
+        write_button = self.driver.find_elements(self.By.XPATH, '//button[text()="Write Message"]')[0]
+        write_button.click()
+        self.time.sleep(self.sleepTime)
+        
+        text_field = self.driver.find_elements(
+            self.By.XPATH, 
+            '//*[@id="root"]/div/div/div/div[2]/div[3]/div[2]/div[1]/section/form/input[3]'
+        )[0]
+        text_field.send_keys(self.message)
+        text_field.submit()
+        self.time.sleep(self.sleepTime)
+        
+        close_button = self.driver.find_elements(
+            self.By.XPATH, 
+            '//*[@id="root"]/div/div/div/div[2]/div[3]/div[2]/div[1]/section/div[1]/div/button[2]'
+        )[0]
+        close_button.click()
+        self.time.sleep(self.sleepTime)
+
+    def cleanup_tabs(self) -> None:
+        self.driver.close()
+        self.driver.switch_to.window(self.driver.window_handles[0])
+        self.time.sleep(self.sleepTime)
+
+class OnlineTracker(ProfileAction):
+    def __init__(self, driver, By, time, sleepTime, data_file: str = "data.json"):
+        super().__init__(driver, By, time, sleepTime)
+        self.data_file = data_file
+        self.data = self.load_data()
+
+    def load_data(self) -> dict:
+        return handle_json_read(self.data_file)
+
+    def save_data(self) -> None:
+        handle_json_write(self.data, self.data_file)
+
+    def process_page(self) -> None:
+        profile_container = self.driver.find_element(
+            self.By.XPATH, 
+            '//*[@id="root"]/div/div/div/div[2]/div[1]/div/div/div[2]/div[2]/div[2]/div/div[1]'
+        )
+        profiles = profile_container.find_elements(self.By.XPATH, './div')
+        
+        for profile in profiles:
+            self.process_single_profile(profile)
+        
+        self.save_data()
+
+    def process_single_profile(self, profile) -> None:
+        try:
+            self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", profile)
+            self.time.sleep(self.sleepTime)
+            
+            status = self.get_profile_status(profile)
+            if status == "Online now":
+                self.update_statistics()
+        except Exception as e:
+            print(f"Failed to process profile status: {e}")
+
+    def get_profile_status(self, profile) -> str:
+        dropdown = profile.find_element(self.By.XPATH, './/*[@data-test-selector="listDropdown"]')
+        status = profile.find_element(self.By.XPATH, './/*[@title="Chat Now"]')
+        return status.text
+
+    def update_statistics(self) -> None:
+        now = datetime.now()
+        date_key = now.strftime("%m-%d-%Y")
+        time_key = now.strftime("%H")
+        
+        for datum in self.data:
+            if datum["date"] == date_key:
+                self.update_existing_date(datum, time_key)
+                return
+                
+        self.add_new_date(now, time_key)
+
+    def update_existing_date(self, datum: dict, time_key: str) -> None:
+        for occurance in datum["occurance"]:
+            if occurance["hour"] == time_key:
+                occurance["count"] += 1
+                return
+        datum["occurance"].append({"hour": time_key, "count": 1})
+
+    def add_new_date(self, now: datetime, time_key: str) -> None:
+        new_schedule = Schedule(
+            day=now.strftime("%A"),
+            date=now.strftime("%m-%d-%Y"),
+            occurance=[{"hour": time_key, "count": 1}]
+        )
+        self.data.append(new_schedule.to_dict())
+
+# Helper functions
+def message_from_file(file_path: str) -> str:
     try:
         with open(file_path, 'r') as file:
-            content = file.read()
-        return content
+            return file.read()
     except FileNotFoundError:
         return "The file was not found."
     except IOError:
         return "An error occurred while reading the file."
 
-#Click the Remind and Send Reminder button
-def click_remind_and_sendreminder(driver,By,time,sleepTime,number):
-    # Find all buttons with the specific text "Button Text"
-    buttons = driver.find_elements(By.XPATH, '//button[text()="Remind"]')
-
-    # Iterate through the list of buttons and click each one
-    for button in buttons:
-        # Scroll the element to the middle of the screen using JavaScript
-        driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", button)
-        # Try to find and click the button
-        try:
-            button.click()
-            time.sleep(sleepTime)
-            # Find buttons with the specific text "Button Text"
-            reminder_button = driver.find_elements(By.XPATH, '//button[text()="Send Reminder"]')
-            # Check if any buttons with the specific text exist        
-            reminder_button[0].click()
-            time.sleep(sleepTime)
-        except Exception as e:
-            # Catch all exception types and do nothing
-            print(f"An exception occurred: {e}. Skipping click.")
-
-        time.sleep(sleepTime)
-    
-    click_next_and_remind_and_sendreminder(driver,By,time,2,number)
-
-#Click next and then click the Remind and Send Reminder button 'Next→'
-
-def click_next_and_remind_and_sendreminder(driver,By,time,sleepTime,number):
-    # Find all buttons with the specific text "Button Text"
-    try:
-        next_button = driver.find_elements(By.XPATH, '//button[contains(text(), "Next")]')
-        driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", next_button[0])
-        # Check if any buttons with the specific text exist        
-        next_button[0].click()
-        time.sleep(sleepTime)
-    except Exception as e:
-    # Catch all exception types and do nothing
-        print(f"An exception occurred: {e}. Skipping click.")
-        return
-    if number == "1":
-        click_remind_and_sendreminder(driver,By,time,sleepTime,number)
-    elif number == "2":
-        send_message_to_profiles(driver,By,time,sleepTime,number)
-    elif number == "3":
-        remove_inactive_profiles(driver,By,time,sleepTime,number)
-    elif number == "4":
-        remove_inactive_profiles_using_xpath(driver,By,time,sleepTime,number)
-    elif number == "5":
-        Get_the_count_of_the_total_online(driver,By,time,sleepTime,number)
-
-#Send message instead of a reminder
-def send_message_to_profiles(driver,By,time,sleepTime,number):
-    reminderMessage = message_from_file('reminder.txt')
-    # Find all buttons with the specific text "Button Text"
-    links = driver.find_elements(By.XPATH, '//a[text()="Read More"]')
-
-    # Iterate through the list of links and click each one
-    for link in links:
-        # Try to find and click the button
-        try:
-            # Scroll the element to the middle of the screen using JavaScript
-            driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", link)
-            
-            link.click()
-            time.sleep(sleepTime)
-
-            # Switch to the new tab
-            driver.switch_to.window(driver.window_handles[1])
-            
-            online_now_text = driver.find_elements(By.XPATH, '//*[@id="root"]/div/div/div/div[2]/div[1]/div/div/div[3]/div[2]/div[2]/div[1]/div/div/div[2]/div/span')[0]
-            if online_now_text.text != "Online now":
-                continue
-
-            # Find links with the specific text "Button Text"
-            write_message_button = driver.find_elements(By.XPATH, '//button[text()="Write Message"]')[0]
-            write_message_button.click()
-            time.sleep(sleepTime)
-            # Find input with the specific place holder text
-            text_field = driver.find_elements(By.XPATH, '//*[@id="root"]/div/div/div/div[2]/div[3]/div[2]/div[1]/section/form/input[3]')[0]
-            text_field.send_keys(reminderMessage)
-            text_field.submit()
-            time.sleep(sleepTime)
-            # Find links with the specific text "Button Text"
-            close_message_button = driver.find_elements(By.XPATH, '//*[@id="root"]/div/div/div/div[2]/div[3]/div[2]/div[1]/section/div[1]/div/button[2]')[0]
-            close_message_button.click()
-            time.sleep(sleepTime)
-            #close the new open tab
-            driver.close()
-            # Switch to the old tab
-            driver.switch_to.window(driver.window_handles[0])
-            time.sleep(sleepTime)
-            # Check if any links with the specific text exist        
-        except Exception as e:
-            # Catch all exception types and do nothing
-            print(f"An exception occurred: {e}. Skipping click.")
-             #close the new open tab
-            driver.close()
-            # Switch to the old tab
-            driver.switch_to.window(driver.window_handles[0])
-            time.sleep(sleepTime)
-            # Check if any links with the specific text exist  
-            continue
-    
-    click_next_and_remind_and_sendreminder(driver,By,time,sleepTime,number)
-
-    
-#Remove inactive profiles
-def remove_inactive_profiles(driver,By,time,sleepTime,number):
-    # Find all buttons with the specific text "Button Text"
-    links = driver.find_elements(By.XPATH, '//a[text()="Read More"]')
-
-    # Iterate through the list of links and click each one
-    for link in links:
-        # Scroll the element to the middle of the screen using JavaScript
-        driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", link)
-        # Try to find and click the button
-        try:
-            link.click()
-            time.sleep(sleepTime)
-
-            # Switch to the new tab
-            driver.switch_to.window(driver.window_handles[1])
-
-
-            # Find links with the specific text "Button Text"
-            online_now_text = driver.find_elements(By.XPATH, '//*[@id="root"]/div/div/div/div[2]/div[1]/div/div/div[3]/div[2]/div[2]/div[1]/div/div/div[2]/div[1]/span')[0]
-            
-            if online_now_text.text == "Online now":
-                print("Online now so skip")
-            else:            
-                activity_text = driver.find_elements(By.XPATH, '//*[@id="root"]/div/div/div/div[2]/div[1]/div/div/div[3]/div[2]/div[2]/div[1]/div/div/div[2]/div[1]/span[2]')[0]
-                if activity_text.text == "Online 2w ago" or activity_text.text == "Online 1w ago":
-                    down_button = driver.find_elements(By.XPATH, '//*[@id="root"]/div/div/div/div[2]/div[1]/div/div/div[3]/div[2]/div[2]/div[1]/div/div/div[1]/div[2]/button')[0]
-                    down_button.click()
-                    time.sleep(1)
-                    cancel_button = driver.find_elements(By.XPATH, '//*[@id="root"]/div/div/div/div[2]/div[1]/div/div/div[3]/div[2]/div[2]/div[1]/div/div/div[1]/div[2]/div/div[1]/button')[0]
-                    cancel_button.click()
-                    time.sleep(sleepTime)
-            
-            #close the new open tab
-            driver.close()
-            # Switch to the old tab
-            driver.switch_to.window(driver.window_handles[0])
-            time.sleep(sleepTime)
-            # Check if any links with the specific text exist        
-        except Exception as e:
-            # Catch all exception types and do nothing
-            print(f"An exception occurred: {e}. Skipping click.")
-    
-    click_next_and_remind_and_sendreminder(driver,By,time,sleepTime,number)
-
-#Use relative XPATH for cancel reminders
-def remove_inactive_profiles_using_xpath(driver,By,time,sleepTime,number):
-    
-    profile_container_xpath = '//*[@id="root"]/div/div/div/div[2]/div[1]/div/div/div[2]/div[2]/div[2]/div/div[1]'
-    container_div = driver.find_element(By.XPATH, profile_container_xpath)
-    profile_divs = container_div.find_elements(By.XPATH, './div')
-
-    # Iterate through the list of links and click each one
-    for profile in profile_divs:
-        # Scroll the element to the middle of the screen using JavaScript
-        driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", profile)
-        time.sleep(sleepTime)
-        
-        try:
-            dropdown_button_xpath = './/*[@data-test-selector="listDropdown"]'
-            dropdown_button = profile.find_element(By.XPATH, dropdown_button_xpath)
-
-            if dropdown_button:
-                chat_now_button_xpath = './/*[@title="Chat Now"]'
-                status_text_element = profile.find_element(By.XPATH, chat_now_button_xpath)
-                if status_text_element.text == "Online 2w ago" or status_text_element.text == "Online 1w ago":
-                    print(status_text_element.text)
-                    time.sleep(sleepTime)
-                    dropdown_button.click()
-                    cancel_button_xpath = './/*[@data-test-selector="cancelInvitationInboxPage"]'
-                    cancel_button = profile.find_element(By.XPATH, cancel_button_xpath)
-                    cancel_button.click()
-                    time.sleep(sleepTime)
-                else:
-                    print(f"Profile {status_text_element.text}")
-            else:
-                print("Profile deactivated")
-        except Exception as e:
-            # Catch all exception types and do nothing
-            print(f"An exception occurred: {e}. Skipping click.")
-
-    click_next_and_remind_and_sendreminder(driver,By,time,sleepTime,number)
-
-
-#Use relative XPATH for getting the count of the total online
-def Get_the_count_of_the_total_online(driver,By,time,sleepTime,number):
-    
-    profile_container_xpath = '//*[@id="root"]/div/div/div/div[2]/div[1]/div/div/div[2]/div[2]/div[2]/div/div[1]'
-    container_div = driver.find_element(By.XPATH, profile_container_xpath)
-    profile_divs = container_div.find_elements(By.XPATH, './div')
-    data = handle_json_read("data.json")
-    print(data)
-    # Iterate through the list of links and click each one
-    for profile in profile_divs:
-        # Scroll the element to the middle of the screen using JavaScript
-        driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", profile)
-        time.sleep(sleepTime)
-        
-        try:
-            dropdown_button_xpath = './/*[@data-test-selector="listDropdown"]'
-            dropdown_button = profile.find_element(By.XPATH, dropdown_button_xpath)
-
-            if dropdown_button:
-                chat_now_button_xpath = './/*[@title="Chat Now"]'
-                status_text_element = profile.find_element(By.XPATH, chat_now_button_xpath)
-                if status_text_element.text == "Online now":
-                    print(status_text_element.text)
-                    # Get the current date and time
-                    now = datetime.now()
-                    # Display the results
-                    print(f"Current Hour (24): {now.strftime("%H")}") # 24-hour format
-                    print(f"Current Day: {now.strftime("%A")}") # Full day name
-                    print(f"Current Date (MM-DD-YYYY): {now.strftime("%m-%d-%Y")}") # Month-Day-Year format
-                    # Query and update
-                    # Specify the time key to check
-                    date_key = now.strftime("%m-%d-%Y")
-                    time_key = now.strftime("%H")
-                    found_date = False
-                    for datum in data:
-                        if datum["date"] == date_key:
-                            today = datum
-                            occurances = today["occurance"]
-                            found_date = True
-                            found_hour = False
-                            for occurance in occurances:
-                                if occurance["hour"] == time_key:
-                                    occurance["count"] +=1
-                                    found_hour = True
-                                    break
-                            if not found_hour:
-                                occurances.append({"hour":now.strftime("%H"), "count":1})
-                                break
-                            break
-                    if not found_date:
-                        new_schedule = Schedule(day=now.strftime("%A"),date=now.strftime("%m-%d-%Y"),occurance=[{"hour": now.strftime("%H"), "count": 1}])
-                        data.append(new_schedule.to_dict())
-
-                    time.sleep(sleepTime)
-                else:
-                    print(f"Profile {status_text_element.text}")
-            else:
-                print("Profile deactivated")
-        except Exception as e:
-            # Catch all exception types and do nothing
-            print(f"An exception occurred: {e}. Skipping click.")
-    handle_json_write(data,"data.json")
-    click_next_and_remind_and_sendreminder(driver,By,time,sleepTime,number)
-
-
-def handle_json_write(json_data, file_name="data.json"):
-    # Writing JSON data to the file
+def handle_json_write(json_data: dict, file_name: str = "data.json") -> None:
     with open(file_name, "w") as file:
         json.dump(json_data, file, indent=4)
     print(f"JSON data has been written to {file_name}.")
-    
-    
-def handle_json_read(file_name="data.json"):
-    # Reading JSON data back from the file
+
+def handle_json_read(file_name: str = "data.json") -> dict:
     with open(file_name, "r") as file:
         read_data = json.load(file)
     print("JSON data has been read back from the file.")
     return read_data
+
+# Main action functions that replace the original recursive functions
+def process_reminders(driver, By, time, sleepTime) -> None:
+    action = ReminderAction(driver, By, time, sleepTime)
+    action.process_all_pages()
+
+def process_messages(driver, By, time, sleepTime) -> None:
+    message = message_from_file('reminder.txt')
+    action = MessageAction(driver, By, time, sleepTime, message)
+    action.process_all_pages()
+
+def track_online_profiles(driver, By, time, sleepTime) -> None:
+    action = OnlineTracker(driver, By, time, sleepTime)
+    action.process_all_pages()
 
