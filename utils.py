@@ -210,6 +210,57 @@ class OnlineTracker(ProfileAction):
         )
         self.data.append(new_schedule.to_dict())
 
+class InactiveProfileRemover(ProfileAction):
+    """Class for removing inactive profiles based on their last online status."""
+    
+    def process_page(self) -> None:
+        """Process the current page and remove inactive profiles."""
+        profile_container = self.driver.find_element(
+            self.By.XPATH, 
+            '//*[@id="root"]/div/div/div/div[2]/div[1]/div/div/div[2]/div[2]/div[2]/div/div[1]'
+        )
+        profiles = profile_container.find_elements(self.By.XPATH, './div')
+        
+        for profile in profiles:
+            self.process_single_profile(profile)
+    
+    def process_single_profile(self, profile) -> None:
+        """Process a single profile and remove if inactive."""
+        try:
+            self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", profile)
+            self.time.sleep(self.sleepTime)
+            
+            dropdown_button = profile.find_element(
+                self.By.XPATH, 
+                './/*[@data-test-selector="listDropdown"]'
+            )
+            
+            if dropdown_button:
+                status_element = profile.find_element(
+                    self.By.XPATH, 
+                    './/*[@title="Chat Now"]'
+                )
+                status_text = status_element.text
+                
+                if status_text in ["Online 2w ago", "Online 1w ago"]:
+                    print(status_text)
+                    self.time.sleep(self.sleepTime)
+                    dropdown_button.click()
+                    
+                    cancel_button = profile.find_element(
+                        self.By.XPATH,
+                        './/*[@data-test-selector="cancelInvitationInboxPage"]'
+                    )
+                    cancel_button.click()
+                    self.time.sleep(self.sleepTime)
+                else:
+                    print(f"Profile {status_text}")
+            else:
+                print("Profile deactivated")
+                
+        except Exception as e:
+            print(f"An exception occurred: {e}. Skipping profile.")
+
 # Helper functions
 def message_from_file(file_path: str) -> str:
     try:
@@ -243,5 +294,10 @@ def process_messages(driver, By, time, sleepTime) -> None:
 
 def track_online_profiles(driver, By, time, sleepTime) -> None:
     action = OnlineTracker(driver, By, time, sleepTime)
+    action.process_all_pages()
+
+def remove_inactive_profiles(driver, By, time, sleepTime) -> None:
+    """Initialize and run the inactive profile remover."""
+    action = InactiveProfileRemover(driver, By, time, sleepTime)
     action.process_all_pages()
 

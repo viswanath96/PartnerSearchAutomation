@@ -6,7 +6,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 import time
 
-from utils import process_reminders, process_messages, track_online_profiles, message_from_file
+from utils import process_reminders, process_messages, track_online_profiles, remove_inactive_profiles, message_from_file
 
 def setup_driver():
     CD_PATH = "C:\Program Files (x86)\chromedriver.exe"
@@ -51,8 +51,9 @@ def main():
     print("1. Send reminders")
     print("2. Send custom message from file")
     print("3. Track online profiles")
+    print("4. Remove inactive profiles")
     
-    choice = input("Enter your choice (1-3): ")
+    choice = input("Enter your choice (1-4): ")
     
     driver = setup_driver()
     try:
@@ -65,6 +66,8 @@ def main():
             process_messages(driver, By, time, 2)
         elif choice == "3":
             track_online_profiles(driver, By, time, 2)
+        elif choice == "4":
+            remove_inactive_profiles(driver, By, time, 2)
         else:
             print("Invalid option selected")
             
