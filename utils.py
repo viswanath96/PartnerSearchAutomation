@@ -3,7 +3,7 @@ import inspect
 import json
 from abc import ABC, abstractmethod
 from typing import Optional
-from Schedule import Schedule
+from schedule import Schedule
 from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException
 
 # Base class for profile actions
