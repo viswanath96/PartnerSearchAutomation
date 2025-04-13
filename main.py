@@ -63,7 +63,7 @@ def main():
         if choice == "1":
             process_reminders(driver, By, time, 2)
         elif choice == "2":
-            process_messages(driver, By, time, 2)
+            process_messages(driver, By, time, 4)
         elif choice == "3":
             track_online_profiles(driver, By, time, 2)
         elif choice == "4":
