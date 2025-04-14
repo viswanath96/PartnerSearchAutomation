@@ -1,5 +1,5 @@
 from .base_action import ProfileAction
-from config import READ_MORE_XPATH, WRITE_MESSAGE_XPATH
+from config.config import READ_MORE_XPATH, WRITE_MESSAGE_XPATH
 
 class MessageAction(ProfileAction):
     def __init__(self, driver, By, time, sleepTime, message: str):
