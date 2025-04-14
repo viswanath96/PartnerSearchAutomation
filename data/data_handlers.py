@@ -1,6 +1,6 @@
 import json
 from pathlib import Path
-from config import ZDATA_DATA_FILE, ZDATA_REMINDER_FILE
+from config.config import ZDATA_DATA_FILE, ZDATA_REMINDER_FILE
 
 def read_message() -> str:
     """Read the message from the reminder file."""

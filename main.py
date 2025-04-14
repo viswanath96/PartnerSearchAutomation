@@ -1,13 +1,13 @@
 from selenium.webdriver.common.by import By
 import time
 
-from browser import setup_driver, login, navigate_to_inbox
+from browser.browser import setup_driver, login, navigate_to_inbox
 from actions.reminder_action import ReminderAction
 from actions.message_action import MessageAction
 from actions.online_tracker import OnlineTracker
 from actions.inactive_remover import InactiveProfileRemover
-from data_handlers import read_message
-from config import REMINDER_SLEEP_TIME, MESSAGE_SLEEP_TIME
+from data.data_handlers import read_message
+from config.config import REMINDER_SLEEP_TIME, MESSAGE_SLEEP_TIME
 
 def main():
     print("Welcome to Partner Search Automation")
