@@ -8,7 +8,7 @@ from actions.online_tracker import OnlineTracker
 from actions.inactive_remover import InactiveProfileRemover
 from actions.matches_forme import MatchesForMe
 from data.data_handlers import read_message
-from config.config import REMINDER_SLEEP_TIME, MESSAGE_SLEEP_TIME
+from config.config import REMINDER_SLEEP_TIME, POPUP_WAIT_TIME,NAVIGATION_WAIT_TIME, MESSAGE_SLEEP_TIME
 
 def main():
     print("Welcome to Partner Search Automation")
@@ -19,7 +19,7 @@ def main():
     print("4. Open all profiles that are looking for me.")
     print("5. Track online profiles")
     
-    choice = input("Enter your choice (1-4): ")
+    choice = input("Enter your choice (1-5): ")
     
     driver = setup_driver()
     try:
@@ -42,7 +42,7 @@ def main():
             navigate_to_more_matches(driver)
             navigate_to_see_all(driver, 1)
             check_options_list(driver)
-            action = MatchesForMe(driver, By, time, REMINDER_SLEEP_TIME)
+            action = MatchesForMe(driver, By, time, POPUP_WAIT_TIME)
             action.process_all_pages()
         elif choice == "5":
             navigate_to_inbox(driver)
