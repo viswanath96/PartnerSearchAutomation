@@ -13,6 +13,7 @@ class MatchesForMe(ProfileAction):
                 link.click()
                 self.time.sleep(self.sleepTime)
                 self.driver.switch_to.window(self.driver.window_handles[1])
+                self.time.sleep(self.sleepTime)
             except Exception as e:
                 print(f"Failed to process profile: {e}")
                 self.cleanup_tabs()

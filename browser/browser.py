@@ -4,7 +4,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
-from config.config import REMINDER_SLEEP_TIME,NAVIGATION_WAIT_TIME,SEE_All_LINK_XPATH ,PREFERENCE_CHECK_BOX
+from config.config import REMINDER_SLEEP_TIME,NAVIGATION_WAIT_TIME,SEE_All_LINK_XPATH ,PREFERENCE_CHECK_BOX,PREFERENCE_CHECK_BOX_FOCUS,BROADER_SEE_All_LINK_XPATH, PREMIUM_SEE_All_LINK_XPATH
 import time
 
 def setup_driver():
@@ -55,6 +55,12 @@ def navigate_to_see_all(driver,type = 1):
     LINK_XPATH = ""
     if type == 1:
         LINK_XPATH =SEE_All_LINK_XPATH
+    elif type == 2:
+        LINK_XPATH = BROADER_SEE_All_LINK_XPATH
+    elif type == 3:
+        LINK_XPATH = PREMIUM_SEE_All_LINK_XPATH
+    else:
+        LINK_XPATH = SEE_All_LINK_XPATH
     see_all_button = driver.find_element(By.XPATH,LINK_XPATH)
     see_all_button.click()
     time.sleep(2)
@@ -62,14 +68,26 @@ def navigate_to_see_all(driver,type = 1):
     time.sleep(10)
 
 
-def check_options_list(driver):
-    for preference in PREFERENCE_CHECK_BOX:
+def check_options_list(driver,type = 1):
+    CHECK_BOX_LIST = ""
+    if type == 1:
+        CHECK_BOX_LIST =PREFERENCE_CHECK_BOX
+    elif type == 2:
+        CHECK_BOX_LIST = PREFERENCE_CHECK_BOX_FOCUS
+    elif type == 3:
+        CHECK_BOX_LIST = PREFERENCE_CHECK_BOX
+    else:
+        CHECK_BOX_LIST = PREFERENCE_CHECK_BOX
+    for preference in CHECK_BOX_LIST:
         try:
             checkbox = driver.find_element(By.ID, preference)  # Select the preference one by one
+            driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", checkbox)
+            time.sleep(REMINDER_SLEEP_TIME)
             checkbox.click()
+            time.sleep(NAVIGATION_WAIT_TIME)
         except Exception as e:
             print(f"An error occurred: {e}")
-        time.sleep(NAVIGATION_WAIT_TIME)
+            time.sleep(NAVIGATION_WAIT_TIME)
 
 
     
