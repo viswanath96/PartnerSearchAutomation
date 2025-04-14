@@ -1,21 +1,21 @@
 from selenium.webdriver.common.by import By
 import time
 
-from browser import setup_driver, login, navigate_to_inbox
+from browser.browser import setup_driver, login, navigate_to_inbox
 from actions.reminder_action import ReminderAction
 from actions.message_action import MessageAction
 from actions.online_tracker import OnlineTracker
 from actions.inactive_remover import InactiveProfileRemover
-from data_handlers import read_message
-from config import REMINDER_SLEEP_TIME, MESSAGE_SLEEP_TIME
+from data.data_handlers import read_message
+from config.config import REMINDER_SLEEP_TIME, MESSAGE_SLEEP_TIME
 
 def main():
     print("Welcome to Partner Search Automation")
     print("Choose an option:")
     print("1. Send reminders")
     print("2. Send custom message from file")
-    print("3. Track online profiles")
-    print("4. Remove inactive profiles")
+    print("3. Remove inactive profiles")
+    print("4. Track online profiles")
     
     choice = input("Enter your choice (1-4): ")
     
@@ -32,10 +32,10 @@ def main():
             action = MessageAction(driver, By, time, MESSAGE_SLEEP_TIME, message)
             action.process_all_pages()
         elif choice == "3":
-            action = OnlineTracker(driver, By, time, REMINDER_SLEEP_TIME)
+            action = InactiveProfileRemover(driver, By, time, REMINDER_SLEEP_TIME)
             action.process_all_pages()
         elif choice == "4":
-            action = InactiveProfileRemover(driver, By, time, REMINDER_SLEEP_TIME)
+            action = OnlineTracker(driver, By, time, REMINDER_SLEEP_TIME)
             action.process_all_pages()
         else:
             print("Invalid option selected")
