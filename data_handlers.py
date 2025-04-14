@@ -1,11 +1,11 @@
 import json
 from pathlib import Path
-from config import DATA_FILE, REMINDER_FILE
+from config import ZDATA_DATA_FILE, ZDATA_REMINDER_FILE
 
 def read_message() -> str:
     """Read the message from the reminder file."""
     try:
-        return Path(REMINDER_FILE).read_text()
+        return Path(ZDATA_REMINDER_FILE).read_text()
     except FileNotFoundError:
         return "The file was not found."
     except IOError:
@@ -14,16 +14,16 @@ def read_message() -> str:
 def read_json_data() -> dict:
     """Read and parse the JSON data file."""
     try:
-        with open(DATA_FILE, "r") as file:
+        with open(ZDATA_DATA_FILE, "r") as file:
             data = json.load(file)
         print("JSON data has been read back from the file.")
         return data
     except FileNotFoundError:
-        print(f"Data file {DATA_FILE} not found. Creating new file.")
+        print(f"Data file {ZDATA_DATA_FILE} not found. Creating new file.")
         return []
 
 def write_json_data(data: dict) -> None:
     """Write data to the JSON file."""
-    with open(DATA_FILE, "w") as file:
+    with open(ZDATA_DATA_FILE, "w") as file:
         json.dump(data, file, indent=4)
-    print(f"JSON data has been written to {DATA_FILE}.")
+    print(f"JSON data has been written to {ZDATA_DATA_FILE}.")

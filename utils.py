@@ -144,7 +144,7 @@ class MessageAction(ProfileAction):
         self.time.sleep(self.sleepTime)
 
 class OnlineTracker(ProfileAction):
-    def __init__(self, driver, By, time, sleepTime, data_file: str = "data.json"):
+    def __init__(self, driver, By, time, sleepTime, data_file: str):
         super().__init__(driver, By, time, sleepTime)
         self.data_file = data_file
         self.data = self.load_data()
