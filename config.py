@@ -4,6 +4,9 @@ from pathlib import Path
 CHROME_DRIVER_PATH = r"C:\Program Files (x86)\chromedriver.exe"
 DATA_FILE = Path(__file__).parent / "data.json"
 REMINDER_FILE = Path(__file__).parent / "reminder.txt"
+ZDATA_PATH = Path(__file__).parent.parent / "zdata"  # Path to zdata directory
+ZDATA_DATA_FILE = ZDATA_PATH / "data.json"  # Path to data.json in zdata directory
+ZDATA_REMINDER_FILE = ZDATA_PATH / "reminder.txt"
 
 # URLs
 LOGIN_URL = "https://www.shaadi.com/registration/user/login?go=https%3A%2F%2Fmy.shaadi.com%2Fmy-shaadi"
