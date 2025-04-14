@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException
-from config import NEXT_BUTTON_XPATH
+from config.config import NEXT_BUTTON_XPATH
 
 class ProfileAction(ABC):
     """Base class for profile actions that process pages of profiles."""

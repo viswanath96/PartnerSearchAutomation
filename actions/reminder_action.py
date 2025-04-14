@@ -1,5 +1,5 @@
 from .base_action import ProfileAction
-from config import REMIND_BUTTON_XPATH, SEND_REMINDER_XPATH
+from config.config import REMIND_BUTTON_XPATH, SEND_REMINDER_XPATH
 
 class ReminderAction(ProfileAction):
     def process_page(self) -> None:

@@ -1,7 +1,7 @@
 from datetime import datetime
 from .base_action import ProfileAction
 from data.data_handlers import read_json_data, write_json_data
-from config import PROFILE_CONTAINER_XPATH, PROFILE_STATUS_XPATH
+from config.config import PROFILE_CONTAINER_XPATH, PROFILE_STATUS_XPATH
 from modals.schedule import Schedule
 
 class OnlineTracker(ProfileAction):

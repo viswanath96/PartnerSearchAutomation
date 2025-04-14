@@ -4,6 +4,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
+from config.config import REMINDER_SLEEP_TIME,NAVIGATION_WAIT_TIME,SEE_All_LINK_XPATH ,PREFERENCE_CHECK_BOX
 import time
 
 def setup_driver():
@@ -27,18 +28,48 @@ def login(driver):
     
     login_button = driver.find_element(By.ID, 'sign_in')
     login_button.click()
-    time.sleep(10)
+    time.sleep(NAVIGATION_WAIT_TIME)
     
     # Close any popups
     driver.switch_to.active_element.send_keys(Keys.ESCAPE)
+    time.sleep(NAVIGATION_WAIT_TIME)
     driver.switch_to.active_element.send_keys(Keys.ESCAPE)
 
 def navigate_to_inbox(driver):
     # Navigate to Inbox and then Sent
     inbox_link = driver.find_element(By.LINK_TEXT, 'Inbox')
     inbox_link.click()
-    time.sleep(5)
+    time.sleep(NAVIGATION_WAIT_TIME)
     
     sent_link = driver.find_element(By.LINK_TEXT, 'Sent')
     sent_link.click()
-    time.sleep(5)
+    time.sleep(NAVIGATION_WAIT_TIME)
+
+def navigate_to_more_matches(driver):
+    # Navigate to Matches for Me
+    matches_link = driver.find_element(By.LINK_TEXT, 'More Matches')
+    matches_link.click()
+    time.sleep(NAVIGATION_WAIT_TIME)
+
+def navigate_to_see_all(driver,type = 1):
+    LINK_XPATH = ""
+    if type == 1:
+        LINK_XPATH =SEE_All_LINK_XPATH
+    see_all_button = driver.find_element(By.XPATH,LINK_XPATH)
+    see_all_button.click()
+    time.sleep(2)
+    driver.switch_to.window(driver.window_handles[1])
+    time.sleep(10)
+
+
+def check_options_list(driver):
+    for preference in PREFERENCE_CHECK_BOX:
+        try:
+            checkbox = driver.find_element(By.ID, preference)  # Select the preference one by one
+            checkbox.click()
+        except Exception as e:
+            print(f"An error occurred: {e}")
+        time.sleep(NAVIGATION_WAIT_TIME)
+
+
+    

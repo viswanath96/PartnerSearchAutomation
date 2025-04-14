@@ -1,5 +1,5 @@
 from .base_action import ProfileAction
-from config import (
+from config.config import (
     PROFILE_CONTAINER_XPATH,
     DROPDOWN_SELECTOR,
     PROFILE_STATUS_XPATH,
