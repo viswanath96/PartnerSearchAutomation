@@ -57,8 +57,6 @@ def navigate_to_see_all(driver,type = 1):
     see_all_button = driver.find_element(By.XPATH,LINK_XPATH)
     see_all_button.click()
     time.sleep(5)
-    driver.switch_to.window(driver.window_handles[1])
-    time.sleep(2)
 
 def check_options_list(driver):
     for preference in PREFERENCE_CHECK_BOX:
