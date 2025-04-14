@@ -4,6 +4,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
+from config.config import SEE_All_LINK_XPATH
 import time
 
 def setup_driver():
@@ -42,3 +43,13 @@ def navigate_to_inbox(driver):
     sent_link = driver.find_element(By.LINK_TEXT, 'Sent')
     sent_link.click()
     time.sleep(5)
+
+def navigate_to_matches(driver):
+    # Navigate to Matches for Me
+    matches_link = driver.find_element(By.LINK_TEXT, 'More Matches')
+    matches_link.click()
+    time.sleep(5)
+    see_all_button = driver.find_element(By.XPATH,SEE_All_LINK_XPATH)
+    see_all_button.click()
+    time.sleep(5)
+    driver.switch_to.window(driver.window_handles[1])
