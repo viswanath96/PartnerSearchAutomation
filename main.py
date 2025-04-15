@@ -40,7 +40,7 @@ def main():
         elif choice == "3":
             navigate_to_inbox(driver)
             message = read_message()
-            action = MessageAction(driver, By, time, MESSAGE_SLEEP_TIME, message)
+            action = MessageAction(driver, By, time, MESSAGE_SLEEP_TIME, message,True)
             action.process_all_pages()
         elif choice == "4":
             navigate_to_inbox(driver)

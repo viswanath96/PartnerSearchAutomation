@@ -1,10 +1,11 @@
 from .base_action import ProfileAction
-from config.config import READ_MORE_XPATH, WRITE_MESSAGE_XPATH
+from config.config import READ_MORE_XPATH,WRITE_MESSAGE_XPATH
 
 class MessageAction(ProfileAction):
-    def __init__(self, driver, By, time, sleepTime, message: str):
+    def __init__(self, driver, By, time, sleepTime, message: str,broadcast: bool = False) -> None:
         super().__init__(driver, By, time, sleepTime)
         self.message = message
+        self.broadcast = broadcast
 
     def process_page(self) -> None:
         links = self.driver.find_elements(self.By.XPATH, READ_MORE_XPATH)
@@ -24,7 +25,7 @@ class MessageAction(ProfileAction):
         # Switch to new tab
         self.driver.switch_to.window(self.driver.window_handles[1])
         
-        if not self.is_profile_online():
+        if not self.is_profile_online() and not self.broadcast:
             self.cleanup_tabs()
             return
             
