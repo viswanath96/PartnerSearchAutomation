@@ -18,7 +18,8 @@ def main():
     print("3. Remove inactive profiles")
     print("4. Open all profiles that are looking for me.")
     print("5. Open all profiles that in a broader scope.")
-    print("6. Track online profiles")
+    print("6. Open all profiles that in a premium scope.")
+    print("7. Track online profiles")
     
     choice = input("Enter your choice (1-6): ")
     
@@ -52,6 +53,12 @@ def main():
             action = MatchesForMe(driver, By, time, NAVIGATION_WAIT_TIME)
             action.process_all_pages()
         elif choice == "6":
+            navigate_to_more_matches(driver)
+            navigate_to_see_all(driver, 3)
+            check_options_list(driver,3)
+            action = MatchesForMe(driver, By, time, NAVIGATION_WAIT_TIME)
+            action.process_all_pages()
+        elif choice == "7":
             navigate_to_inbox(driver)
             action = OnlineTracker(driver, By, time, REMINDER_SLEEP_TIME)
             action.process_all_pages()

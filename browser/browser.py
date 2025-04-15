@@ -4,7 +4,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
-from config.config import REMINDER_SLEEP_TIME,NAVIGATION_WAIT_TIME,SEE_All_LINK_XPATH ,PREFERENCE_CHECK_BOX,PREFERENCE_CHECK_BOX_FOCUS,BROADER_SEE_All_LINK_XPATH, PREMIUM_SEE_All_LINK_XPATH
+from config.config import REMINDER_SLEEP_TIME,NAVIGATION_WAIT_TIME,SEE_All_LINK_XPATH ,PREFERENCE_CHECK_BOX,PREFERENCE_CHECK_BOX_MORE_FOCUS,PREFERENCE_CHECK_BOX_FOCUS,BROADER_SEE_All_LINK_XPATH, PREMIUM_SEE_All_LINK_XPATH
 import time
 
 def setup_driver():
@@ -75,7 +75,7 @@ def check_options_list(driver,type = 1):
     elif type == 2:
         CHECK_BOX_LIST = PREFERENCE_CHECK_BOX_FOCUS
     elif type == 3:
-        CHECK_BOX_LIST = PREFERENCE_CHECK_BOX
+        CHECK_BOX_LIST = PREFERENCE_CHECK_BOX_MORE_FOCUS
     else:
         CHECK_BOX_LIST = PREFERENCE_CHECK_BOX
     for preference in CHECK_BOX_LIST:
