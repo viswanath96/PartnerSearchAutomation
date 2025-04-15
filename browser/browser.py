@@ -4,7 +4,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
-from config.config import REMINDER_SLEEP_TIME,NAVIGATION_WAIT_TIME,SEE_All_LINK_XPATH ,PREFERENCE_CHECK_BOX
+from config.config import NAVIGATION_WAIT_TIME,SEE_All_LINK_XPATH ,PREFERENCE_CHECK_BOX
 import time
 
 def setup_driver():
@@ -18,7 +18,7 @@ def setup_driver():
     return driver
 
 def login(driver):
-    driver.get("https://www.shaadi.com/registration/user/login?go=https%3A%2F%2Fmy.shaadi.com%2Fmy-shaadi")
+    driver.get(os.environ.get('SH_LOGIN_URL'))
     
     username_element = driver.find_element(By.ID, 'email')
     username_element.send_keys(os.environ.get('SH_USERNAME'))

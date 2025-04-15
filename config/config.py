@@ -8,8 +8,6 @@ ZDATA_PATH = Path(__file__).parent.parent.parent / "zdata"  # Path to zdata dire
 ZDATA_DATA_FILE = ZDATA_PATH / "data.json"  # Path to data.json in zdata directory
 ZDATA_REMINDER_FILE = ZDATA_PATH / "reminder.txt"
 
-# URLs
-LOGIN_URL = "https://www.shaadi.com/registration/user/login?go=https%3A%2F%2Fmy.shaadi.com%2Fmy-shaadi"
 
 # Browser settings
 POPUP_WAIT_TIME = 10
