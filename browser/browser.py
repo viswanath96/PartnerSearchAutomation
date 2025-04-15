@@ -18,7 +18,7 @@ def setup_driver():
     return driver
 
 def login(driver):
-    driver.get("https://www.shaadi.com/registration/user/login?go=https%3A%2F%2Fmy.shaadi.com%2Fmy-shaadi")
+    driver.get(os.environ.get('SH_LOGIN_URL'))
     
     username_element = driver.find_element(By.ID, 'email')
     username_element.send_keys(os.environ.get('SH_USERNAME'))
