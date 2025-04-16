@@ -25,12 +25,12 @@ class MessageAction(ProfileAction):
 
         self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", link)
         
-        # Locate the <div> element with title="Chat Now"
-        chat_div = self.driver.find_element(self.By.XPATH, CHAT_NOW_XPATH)
-        # Check if there is a child element with text "online now"
-        child_elements = chat_div.find_elements(self.By.XPATH, ONLINE_NOW_XPATH)
-        if not child_elements:
-            return
+        # # Locate the <div> element with title="Chat Now"
+        # chat_div = self.driver.find_element(self.By.XPATH, CHAT_NOW_XPATH)
+        # # Check if there is a child element with text "online now"
+        # child_elements = chat_div.find_elements(self.By.XPATH, ONLINE_NOW_XPATH)
+        # if not child_elements:
+        #     return
             
         link.click()
         self.time.sleep(self.sleepTime)
