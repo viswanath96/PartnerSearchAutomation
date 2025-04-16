@@ -22,7 +22,7 @@ def main():
     print("7. Open all profiles that in a premium scope.")
     print("8. Track online profiles")
     
-    choice = input("Enter your choice (1-6): ")
+    choice = input("Enter your choice (1-8): ")
     
     driver = setup_driver()
     try:
