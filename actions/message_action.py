@@ -1,5 +1,5 @@
 from .base_action import ProfileAction
-from config.config import READ_MORE_XPATH, WRITE_MESSAGE_XPATH
+from config.config import READ_MORE_XPATH, WRITE_MESSAGE_XPATH,CHAT_NOW_XPATH,ONLINE_NOW_XPATH
 
 class MessageAction(ProfileAction):
     def __init__(self, driver, By, time, sleepTime, message: str):
@@ -18,6 +18,15 @@ class MessageAction(ProfileAction):
 
     def process_single_profile(self, link) -> None:
         self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", link)
+        # Locate the <div> element with title="Chat Now"
+        chat_div = self.driver.find_element(self.By.XPATH, CHAT_NOW_XPATH)
+    
+        # Check if there is a child element with text "online now"
+        child_elements = chat_div.find_elements(self.By.XPATH, ONLINE_NOW_XPATH)
+    
+        if not child_elements:
+            return
+            
         link.click()
         self.time.sleep(self.sleepTime)
         
