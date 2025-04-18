@@ -14,6 +14,7 @@ def setup_driver():
     options.add_experimental_option('useAutomationExtension', False)
     service = Service(CD_PATH)
     driver = webdriver.Chrome(service=service, options=options)
+    driver.maximize_window()
     driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => 'Batman'})")
     return driver
 
