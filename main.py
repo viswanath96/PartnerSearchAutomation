@@ -23,6 +23,7 @@ def main():
     print("7. Open all profiles that in a premium scope.")
     print("8. Track online profiles")
 
+    WINDOWS_SERVICE_OPTIONS = []
     try:
         # Load configuration from config.json
         with open('config.json', 'r') as config_file:
