@@ -23,11 +23,15 @@ def main():
     print("7. Open all profiles that in a premium scope.")
     print("8. Track online profiles")
 
-    # Load configuration from config.json
-    with open('config.json', 'r') as config_file:
-        config = json.load(config_file)
-    WINDOWS_SERVICE_OPTIONS = config.get("WINDOWS_SERVICE_OPTIONS", [])
-    
+    try:
+        # Load configuration from config.json
+        with open('config.json', 'r') as config_file:
+            config = json.load(config_file)
+        WINDOWS_SERVICE_OPTIONS = config.get("WINDOWS_SERVICE_OPTIONS", [])
+    except Exception as e:
+            print(f"An error occurred: {e}")
+
+
     if WINDOWS_SERVICE_OPTIONS:
         choice = WINDOWS_SERVICE_OPTIONS[0]
     else:
