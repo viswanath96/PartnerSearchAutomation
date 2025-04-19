@@ -1,6 +1,7 @@
 from selenium.webdriver.common.by import By
 import time
 import json
+import traceback
 from browser.browser import setup_driver, login, navigate_to_inbox, navigate_to_more_matches, navigate_to_see_all,check_options_list
 from actions.reminder_action import ReminderAction
 from actions.message_action import MessageAction
@@ -31,6 +32,7 @@ def main():
         WINDOWS_SERVICE_OPTIONS = config.get("WINDOWS_SERVICE_OPTIONS", [])
     except Exception as e:
             print(f"An error occurred: {e}")
+            traceback.print_exc()
 
 
     if WINDOWS_SERVICE_OPTIONS:
