@@ -1,6 +1,6 @@
 from selenium.webdriver.common.by import By
 import time
-
+import json
 from browser.browser import setup_driver, login, navigate_to_inbox, navigate_to_more_matches, navigate_to_see_all,check_options_list
 from actions.reminder_action import ReminderAction
 from actions.message_action import MessageAction
@@ -11,6 +11,7 @@ from data.data_handlers import read_message
 from config.config import REMINDER_SLEEP_TIME, POPUP_WAIT_TIME,NAVIGATION_WAIT_TIME, MESSAGE_SLEEP_TIME
 
 def main():
+
     print("Welcome to Partner Search Automation")
     print("Choose an option:")
     print("1. Send reminders")
@@ -21,8 +22,16 @@ def main():
     print("6. Open all profiles that in a broader scope.")
     print("7. Open all profiles that in a premium scope.")
     print("8. Track online profiles")
+
+    # Load configuration from config.json
+    with open('config.json', 'r') as config_file:
+        config = json.load(config_file)
+    WINDOWS_SERVICE_OPTIONS = config.get("WINDOWS_SERVICE_OPTIONS", [])
     
-    choice = input("Enter your choice (1-8): ")
+    if WINDOWS_SERVICE_OPTIONS:
+        choice = WINDOWS_SERVICE_OPTIONS[0]
+    else:
+        choice = input("Enter your choice (1-8): ")
     
     driver = setup_driver()
     try:
