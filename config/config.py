@@ -12,6 +12,7 @@ ZDATA_REMINDER_FILE = ZDATA_PATH / "reminder.txt"
 # Browser settings
 POPUP_WAIT_TIME = 10
 NAVIGATION_WAIT_TIME = 5
+LARGE_BANNER_WAIT_TIME = 60
 REMINDER_SLEEP_TIME = 2
 MESSAGE_SLEEP_TIME = 4
 PREFERENCE_CHECK_BOX = ['photostatus-visible','recently_joined-1 Week','diet-Non-Veg','diet-Eggetarian','diet-Vegan']
@@ -19,6 +20,7 @@ PREFERENCE_CHECK_BOX_FOCUS = ['photostatus-visible','search_v3_relevance-1 Week'
 PREFERENCE_CHECK_BOX_MORE_FOCUS = ['verified_profiles-verified_profiles','photostatus-visible','search_v3_relevance-1 Week','stateofresidence-Maharashtra','stateofresidence-Madhya Pradesh','annualincome-INR 4 Lakh to 7 Lakh','annualincome-INR 7 Lakh to 10 Lakh','annualincome-INR 1 Lakh to 2 Lakh','annualincome-INR 2 Lakh to 4 Lakh','diet-Non-Veg','diet-Eggetarian','diet-Vegan']
 
 # XPath selectors
+CLOSE_BUTTON_XPATH = '//*[@id="close-icon"]'
 NEXT_BUTTON_XPATH = '//button[contains(text(), "Next")]'
 REMIND_BUTTON_XPATH = '//button[text()="Remind"]'
 SEND_REMINDER_XPATH = '//button[text()="Send Reminder"]'
@@ -26,6 +28,8 @@ READ_MORE_XPATH = '//a[text()="Read More"]'
 MORE_XPATH = '//a[text()="More"]'
 WRITE_MESSAGE_XPATH = '//button[text()="Write Message"]'
 PROFILE_STATUS_XPATH = './/*[@title="Chat Now"]'
+CHAT_NOW_XPATH = '//div[@title="Chat Now"]'
+ONLINE_NOW_XPATH = './/*[contains(text(), "online now")]'
 DROPDOWN_SELECTOR = './/*[@data-test-selector="listDropdown"]'
 CANCEL_INVITATION_XPATH = './/*[@data-test-selector="cancelInvitationInboxPage"]'
 PROFILE_CONTAINER_XPATH = '//*[@id="root"]/div/div/div/div[2]/div[1]/div/div/div[2]/div[2]/div[2]/div/div[1]'

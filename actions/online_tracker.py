@@ -30,7 +30,7 @@ class OnlineTracker(ProfileAction):
             if status == "Online now":
                 self.update_statistics()
         except Exception as e:
-            print(f"Failed to process profile status: {e}")
+            print(f"{datetime.datetime.now().strftime("%m-%d-%Y %H:%M")} - Failed to process profile status: {e}")
 
     def get_profile_status(self, profile) -> str:
         status = profile.find_element(self.By.XPATH, PROFILE_STATUS_XPATH)

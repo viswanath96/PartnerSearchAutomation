@@ -1,3 +1,4 @@
+import datetime
 from .base_action import ProfileAction
 from config.config import (
     PROFILE_CONTAINER_XPATH,
@@ -46,9 +47,9 @@ class InactiveProfileRemover(ProfileAction):
                     cancel_button.click()
                     self.time.sleep(self.sleepTime)
                 else:
-                    print(f"Profile {status_text}")
+                    print(f"{datetime.datetime.now().strftime("%m-%d-%Y %H:%M")} - Profile {status_text}")
             else:
                 print("Profile deactivated")
                 
         except Exception as e:
-            print(f"An exception occurred: {e}. Skipping profile.")
+            print(f"{datetime.datetime.now().strftime("%m-%d-%Y %H:%M")} - An exception occurred: {e}. Skipping profile.")

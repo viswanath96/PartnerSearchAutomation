@@ -1,3 +1,4 @@
+import datetime
 import json
 from pathlib import Path
 from config.config import ZDATA_DATA_FILE, ZDATA_REMINDER_FILE
@@ -19,11 +20,11 @@ def read_json_data() -> dict:
         print("JSON data has been read back from the file.")
         return data
     except FileNotFoundError:
-        print(f"Data file {ZDATA_DATA_FILE} not found. Creating new file.")
+        print(f"{datetime.datetime.now().strftime("%m-%d-%Y %H:%M")} - Data file {ZDATA_DATA_FILE} not found. Creating new file.")
         return []
 
 def write_json_data(data: dict) -> None:
     """Write data to the JSON file."""
     with open(ZDATA_DATA_FILE, "w") as file:
         json.dump(data, file, indent=4)
-    print(f"JSON data has been written to {ZDATA_DATA_FILE}.")
+    print(f"{datetime.datetime.now().strftime("%m-%d-%Y %H:%M")} - JSON data has been written to {ZDATA_DATA_FILE}.")

@@ -1,3 +1,4 @@
+import datetime
 from .base_action import ProfileAction
 from config.config import MORE_XPATH
 
@@ -15,5 +16,5 @@ class MatchesForMe(ProfileAction):
                 self.driver.switch_to.window(self.driver.window_handles[1])
                 self.time.sleep(self.sleepTime)
             except Exception as e:
-                print(f"Failed to process profile: {e}")
+                print(f"{datetime.datetime.now().strftime("%m-%d-%Y %H:%M")} - Failed to process profile: {e}")
                 self.cleanup_tabs()
