@@ -26,5 +26,6 @@ def read_json_data() -> dict:
 def write_json_data(data: dict) -> None:
     """Write data to the JSON file."""
     with open(ZDATA_DATA_FILE, "w") as file:
+        print(f"Writing JSON data to {data}...")
         json.dump(data, file, indent=4)
     print(f"{datetime.datetime.now().strftime("%m-%d-%Y %H:%M")} - JSON data has been written to {ZDATA_DATA_FILE}.")

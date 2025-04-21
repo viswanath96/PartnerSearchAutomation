@@ -37,7 +37,7 @@ class OnlineTracker(ProfileAction):
         return status.text
 
     def update_statistics(self) -> None:
-        now = datetime.now()
+        now = datetime.datetime.now()
         date_key = now.strftime("%m-%d-%Y")
         time_key = now.strftime("%H")
         
