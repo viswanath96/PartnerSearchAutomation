@@ -1,5 +1,5 @@
 {
-    "WINDOWS_SERVICE_OPTIONS":["8"],
+    "WINDOWS_SERVICE_OPTIONS":[],
     "CHROME_DRIVER_PATH": "C:\\Program Files (x86)\\chromedriver.exe",
     "DATA_FILE": "data.json",
     "REMINDER_FILE": "reminder.txt",

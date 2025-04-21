@@ -4,7 +4,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
-from config.config import REMINDER_SLEEP_TIME,NAVIGATION_WAIT_TIME,SEE_All_LINK_XPATH ,PREFERENCE_CHECK_BOX,PREFERENCE_CHECK_BOX_MORE_FOCUS,PREFERENCE_CHECK_BOX_FOCUS,BROADER_SEE_All_LINK_XPATH, PREMIUM_SEE_All_LINK_XPATH
+from config.config import REMINDER_SLEEP_TIME,NAVIGATION_WAIT_TIME,SEE_All_LINK_XPATH ,PREFERENCE_CHECK_BOX,PREFERENCE_CHECK_BOX_MORE_FOCUS,PREFERENCE_CHECK_BOX_FOCUS,BROADER_SEE_All_LINK_XPATH, PREMIUM_SEE_All_LINK_XPATH,LARGE_BANNER_WAIT_TIME
 import time
 
 def setup_driver():
@@ -35,6 +35,9 @@ def login(driver):
     driver.switch_to.active_element.send_keys(Keys.ESCAPE)
     time.sleep(NAVIGATION_WAIT_TIME)
     driver.switch_to.active_element.send_keys(Keys.ESCAPE)
+    
+    time.sleep(LARGE_BANNER_WAIT_TIME)
+    
 
 def navigate_to_inbox(driver):
     # Navigate to Inbox and then Sent
