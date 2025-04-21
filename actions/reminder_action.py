@@ -1,3 +1,4 @@
+import datetime
 from .base_action import ProfileAction
 from config.config import REMIND_BUTTON_XPATH, SEND_REMINDER_XPATH
 
@@ -15,4 +16,4 @@ class ReminderAction(ProfileAction):
                 reminder_button.click()
                 self.time.sleep(self.sleepTime)
             except Exception as e:
-                print(f"Failed to process reminder: {e}")
+                print(f"{datetime.datetime.now().strftime("%m-%d-%Y %H:%M")} - Failed to process reminder: {e}")

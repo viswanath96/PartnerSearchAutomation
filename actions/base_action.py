@@ -1,3 +1,4 @@
+import datetime
 from abc import ABC, abstractmethod
 from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException
 from config.config import NEXT_BUTTON_XPATH
@@ -31,13 +32,13 @@ class ProfileAction(ABC):
             self.time.sleep(self.sleepTime)
             return True
         except Exception as e:
-            print(f"Failed to navigate to next page: {e}")
+            print(f"{datetime.datetime.now().strftime("%m-%d-%Y %H:%M")} - Failed to navigate to next page: {e}")
             return False
 
     def process_all_pages(self) -> None:
         page_number = 1
         while True:
-            print(f"Processing page {page_number}")
+            print(f"{datetime.datetime.now().strftime("%m-%d-%Y %H:%M")} - Processing page {page_number}")
             self.process_page()
             
             if not self.has_next_page():

@@ -1,3 +1,5 @@
+import datetime
+
 from .base_action import ProfileAction
 from config.config import READ_MORE_XPATH, WRITE_MESSAGE_XPATH,CHAT_NOW_XPATH,ONLINE_NOW_XPATH
 
@@ -14,7 +16,7 @@ class MessageAction(ProfileAction):
             try:
                 self.process_single_profile(link)
             except Exception as e:
-                print(f"Failed to process profile: {e}")
+                print(f"{datetime.datetime.now().strftime("%m-%d-%Y %H:%M")} - Failed to process profile: {e}")
                 self.cleanup_tabs()
 
     def process_single_profile(self, link) -> None:
@@ -22,7 +24,7 @@ class MessageAction(ProfileAction):
         try:
             self.close_open_chat()
         except Exception as e:
-            print(f"No open chat to close")
+            print(f"{datetime.datetime.now().strftime("%m-%d-%Y %H:%M")} - No open chat to close")
 
         self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", link)
         

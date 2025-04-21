@@ -1,5 +1,6 @@
 from selenium.webdriver.common.by import By
 import time
+import datetime
 import json
 import traceback
 from browser.browser import setup_driver, login, navigate_to_inbox, navigate_to_more_matches, navigate_to_see_all,check_options_list
@@ -31,7 +32,7 @@ def main():
             config = json.load(config_file)
         WINDOWS_SERVICE_OPTIONS = config.get("WINDOWS_SERVICE_OPTIONS", [])
     except Exception as e:
-            print(f"An error occurred: {e}")
+            print(f"{datetime.datetime.now().strftime("%m-%d-%Y %H:%M")} - An error occurred: {e}")
             traceback.print_exc()
 
 
@@ -88,7 +89,7 @@ def main():
             print("Invalid option selected")
             
     except Exception as e:
-        print(f"An error occurred: {e}")
+        print(f"{datetime.datetime.now().strftime("%m-%d-%Y %H:%M")} - An error occurred: {e}")
     finally:
         try:
             input("Press Enter to close the browser...")

@@ -6,6 +6,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from config.config import REMINDER_SLEEP_TIME,NAVIGATION_WAIT_TIME,SEE_All_LINK_XPATH ,PREFERENCE_CHECK_BOX,PREFERENCE_CHECK_BOX_MORE_FOCUS,PREFERENCE_CHECK_BOX_FOCUS,BROADER_SEE_All_LINK_XPATH, PREMIUM_SEE_All_LINK_XPATH,LARGE_BANNER_WAIT_TIME
 import time
+import datetime
 
 def setup_driver():
     CD_PATH = "C:\Program Files (x86)\chromedriver.exe"
@@ -90,7 +91,7 @@ def check_options_list(driver,type = 1):
             checkbox.click()
             time.sleep(NAVIGATION_WAIT_TIME)
         except Exception as e:
-            print(f"An error occurred: {e}")
+            print(f"{datetime.datetime.now().strftime("%m-%d-%Y %H:%M")} - An error occurred: {e}")
             time.sleep(NAVIGATION_WAIT_TIME)
 
 
